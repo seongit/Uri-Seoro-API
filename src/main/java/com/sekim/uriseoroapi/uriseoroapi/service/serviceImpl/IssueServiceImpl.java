@@ -20,13 +20,6 @@ public class IssueServiceImpl implements IssueService {
 
     private final IssueRepository issueRepository;
 
-    @Override
-    @Transactional
-    public Long save(IssueDto.Request dto) {
-        Issue issue = dto.toEntity();
-        issueRepository.save(issue);
-        return issue.getId();
-    }
 
     // 일감 전체 목록 조회
     @Override
@@ -36,5 +29,14 @@ public class IssueServiceImpl implements IssueService {
     }
 
 
+    // 일감 생성
+    @Override
+    @Transactional
+    public int save(IssueDto dto) {
+        Issue issue = dto.toEntity();
+        System.out.println(issue);
+        issueRepository.save(issue);
+        return issue.getId();
+    }
 
 }
