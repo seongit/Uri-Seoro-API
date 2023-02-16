@@ -49,7 +49,7 @@ public class Issue {
     @Column(columnDefinition = "int(11) default 0", nullable = false)
     private int done_ratio;
 
-    @Column(columnDefinition = "tinyint(1)", nullable = false)
+    @Column(columnDefinition = "tinyint(1) default 0", nullable = false)
     private int is_private;
 
     @Column(columnDefinition = "date")

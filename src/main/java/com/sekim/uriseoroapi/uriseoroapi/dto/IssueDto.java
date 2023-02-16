@@ -41,19 +41,37 @@ public class IssueDto {
 
            int doneRatio = 0;
 
-
+           // 사용자에게 전달 받는 필수값
           projectId = (Integer) issue.get("project_id");
           trackerId  = (Integer) issue.get("tracker_id");
           statusId = (Integer) issue.get("status_id");
           priorityId= (Integer) issue.get("priority_id");
           subject = (String) issue.get("subject");
+
           description = (String) issue.get("description");
           startDate = (String) issue.get("start_date");
           dueDate = (String)issue.get("due_date");
-          assignedId = (Integer) issue.get("assigned_to_id");
-          authorId = (Integer)issue.get("author_id");
-          doneRatio =(Integer) issue.get("done_ratio");
 
+         /**
+          *  NullPointerException 방지를 위해 다음과 같이 처리
+          *  null일 경우 초기값으로 insert 됨
+          * String 타입일 때는 다음과 같이 null도 정상적으로 API를 호출할 수 있다.
+          * assignedId = (String) issue.get("assigned_to_id");
+          *
+          * Integer일 경우 NullPointerException 발생함
+          */
+
+         if(issue.get("assigned_to_id") != null){
+             assignedId = (Integer) issue.get("assigned_to_id");
+         }
+
+         if(issue.get("author_id") != null){
+             authorId = (Integer)issue.get("author_id");
+         }
+
+         if(issue.get("done_ratio") != null){
+              doneRatio =(Integer) issue.get("done_ratio");
+          }
 
           Issue res = Issue.builder()
                   .project_id(projectId)
