@@ -35,7 +35,12 @@ public class IssueDto {
 
            String dueDate = "";
 
-           int assignedId = 0;
+
+           // 담당자 변경을 위해 string으로 선언
+            // redmine api 상에서 담당자 초기화를 위해서는 ""값으로 선언되어야 함
+           // int assignedId = 0;
+
+            String assignedId = "";
 
            int authorId = 0;
 
@@ -52,6 +57,8 @@ public class IssueDto {
           startDate = (String) issue.get("start_date");
           dueDate = (String)issue.get("due_date");
 
+          assignedId = (String) issue.get("assigned_to_id");
+
          /**
           *  NullPointerException 방지를 위해 다음과 같이 처리
           *  null일 경우 초기값으로 insert 됨
@@ -61,9 +68,9 @@ public class IssueDto {
           * Integer일 경우 NullPointerException 발생함
           */
 
-         if(issue.get("assigned_to_id") != null){
-             assignedId = (Integer) issue.get("assigned_to_id");
-         }
+//         if(issue.get("assigned_to_id") != null){
+//             assignedId = (Integer) issue.get("assigned_to_id");
+//         }
 
          if(issue.get("author_id") != null){
              authorId = (Integer)issue.get("author_id");
@@ -89,5 +96,54 @@ public class IssueDto {
 
           return res;
      }
+
+
+    @Getter
+     public static class Response{
+
+         private final int id;
+
+         private final int projectId;
+
+         private final int trackerId;
+
+         private final int statusId;
+
+         private final int priorityId;
+
+         private final String subject;
+
+         private final String description;
+
+         private final String startDate;
+
+         private final String dueDate;
+
+         private final String  assignedId;
+
+         private final int authorId;
+
+         private final int doneRatio;
+
+
+         public Response(Issue issue){
+             this.id = issue.getId();
+             this.projectId = issue.getProject_id();
+             this.trackerId = issue.getTracker_id();
+             this.statusId = issue.getStatus_id();
+             this.priorityId = issue.getPriority_id();
+             this.subject = issue.getSubject();
+             this.description = issue.getDescription();
+             this.startDate = issue.getStart_date();
+             this.dueDate = issue.getDue_date();
+             this.assignedId = issue.getAssigned_to_id();
+             this.authorId = issue.getAuthor_id();
+             this.doneRatio = issue.getDone_ratio();
+         }
+     }
+
+
+
+
 
 }

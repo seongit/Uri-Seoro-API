@@ -12,7 +12,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class UploadTokenDto {
+   public class UploadTokenDto {
 
    private int id;
    private String token;

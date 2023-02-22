@@ -1,5 +1,6 @@
 package com.sekim.uriseoroapi.uriseoroapi.model;
 
+import com.sekim.uriseoroapi.uriseoroapi.dto.IssueDto;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -41,7 +42,8 @@ public class Issue {
     private String due_date;
 
     @Column
-    private int assigned_to_id;
+    // private int assigned_to_id;
+    String assigned_to_id;
 
     @Column(columnDefinition = "int(11)", nullable = false)
     private int author_id;
@@ -63,6 +65,10 @@ public class Issue {
     @CreatedDate
     private String updated_on; // 이슈 변경 일자
 
+    @Column(columnDefinition = "date")
+    @CreatedDate
+    private String closed_on; // 이슈 삭제 일자
+
 
     /* 해당 엔티티를 저장하기 이전에 실행 */
     @PrePersist
@@ -76,6 +82,32 @@ public class Issue {
     public void onPreUpdate(){
         this.updated_on = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
     }
+
+    // 일감 수정
+    public int update(IssueDto issueDto){
+
+        this.project_id = (Integer) issueDto.getIssue().get("project_id");
+        this.tracker_id = (Integer) issueDto.getIssue().get("tracker_id");
+        this.status_id = (Integer) issueDto.getIssue().get("status_id");
+        this.priority_id = (Integer) issueDto.getIssue().get("priority_id");
+        this.subject = (String) issueDto.getIssue().get("subject");
+        this.description = (String) issueDto.getIssue().get("description");
+        this.due_date = (String) issueDto.getIssue().get("due_date");
+
+
+        this.assigned_to_id = (String) issueDto.getIssue().get("assigned_to_id");
+
+
+        this.author_id = (Integer) issueDto.getIssue().get("author_id");
+        this.done_ratio = (Integer) issueDto.getIssue().get("done_ratio");
+//        this.is_private = (Integer) issueDto.getIssue().get("is_private");
+        this.start_date = (String) issueDto.getIssue().get("start_date");
+        this.updated_on = (String) issueDto.getIssue().get("updated_on");
+
+        return this.id;
+    }
+
+
 
 
 }

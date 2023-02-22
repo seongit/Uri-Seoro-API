@@ -1,7 +1,6 @@
 package com.sekim.uriseoroapi.uriseoroapi.service.serviceImpl;
 
 import com.sekim.uriseoroapi.uriseoroapi.dto.IssueDto;
-import com.sekim.uriseoroapi.uriseoroapi.model.Board;
 import com.sekim.uriseoroapi.uriseoroapi.model.Issue;
 import com.sekim.uriseoroapi.uriseoroapi.repository.IssueRepository;
 import com.sekim.uriseoroapi.uriseoroapi.service.IssueService;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -38,5 +38,55 @@ public class IssueServiceImpl implements IssueService {
         issueRepository.save(issue);
         return issue.getId();
     }
+
+
+    // 일감 상세 조회
+
+    @Override
+    @Transactional
+    public IssueDto.Response getissueDetail(int id) {
+
+        Issue issue = issueRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(
+
+        ));
+
+        return  new IssueDto.Response(issue) ;
+    }
+
+
+    // 일감 수정
+
+    @Override
+    @Transactional
+    public int update(int id, IssueDto dto) {
+
+        Issue issue = issueRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException());
+
+        int updatedIssueId = issue.update(dto);
+
+        System.out.println("update ===========>" + updatedIssueId);
+
+        return updatedIssueId;
+
+    }
+
+    @Override
+    @Transactional
+    public int getIssueId(int id) {
+
+        Issue issue = issueRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException());
+
+        return issue.getId();
+    }
+
+    @Override
+    public int updateCloseDate(int id) {
+
+
+        return 0;
+    }
+
 
 }
