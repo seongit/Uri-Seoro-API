@@ -37,7 +37,7 @@ public class IssueDto {
 
 
            // 담당자 변경을 위해 string으로 선언
-            // redmine api 상에서 담당자 초기화를 위해서는 ""값으로 선언되어야 함
+           // redmine api 상에서 담당자 초기화를 위해서는 ""값으로 선언되어야 함
            // int assignedId = 0;
 
             String assignedId = "";
@@ -92,6 +92,7 @@ public class IssueDto {
                   .done_ratio(doneRatio)
                   .priority_id(priorityId)
                   .assigned_to_id(assignedId)
+                  .delYN("N")
                   .build();
 
           return res;

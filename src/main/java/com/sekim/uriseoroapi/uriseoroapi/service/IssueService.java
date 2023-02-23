@@ -2,6 +2,7 @@ package com.sekim.uriseoroapi.uriseoroapi.service;
 
 import com.sekim.uriseoroapi.uriseoroapi.dto.IssueDto;
 import com.sekim.uriseoroapi.uriseoroapi.model.Issue;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +26,6 @@ public interface IssueService {
 
 
     // 일감 삭제
-    int updateCloseDate(int id);
-
-
+    int updateStatus(int id);
 
 }

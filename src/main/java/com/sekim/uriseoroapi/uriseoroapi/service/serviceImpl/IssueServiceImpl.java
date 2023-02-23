@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -71,6 +70,7 @@ public class IssueServiceImpl implements IssueService {
 
     }
 
+    // 일감 상세 조회
     @Override
     @Transactional
     public int getIssueId(int id) {
@@ -81,12 +81,20 @@ public class IssueServiceImpl implements IssueService {
         return issue.getId();
     }
 
+    // 일감 삭제
+
     @Override
-    public int updateCloseDate(int id) {
+    @Transactional
+    public int updateStatus(int id) {
 
+        int result = issueRepository.updateStatus(id);
 
-        return 0;
+        System.out.println("result====>" + result);
+
+        return 1;
     }
+
+
 
 
 }

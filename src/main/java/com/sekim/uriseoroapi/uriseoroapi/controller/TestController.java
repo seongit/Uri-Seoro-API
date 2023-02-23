@@ -65,7 +65,7 @@ public class TestController {
      */
     // 일감 전체 조회
     @GetMapping("/getIssues/test")
-    public JSONObject read(@RequestParam int page){
+    public JSONObject read(@RequestParam int page,@RequestParam int assigned_to_id, @RequestParam String status_id){
 
         JSONObject obj = null;
 
@@ -79,7 +79,19 @@ public class TestController {
                 offSet = (page - 1) * 10;
             }
 
-            obj = webClient.get().uri("/issues.json?offset=" + offSet + "&limit=10")
+            String assignedId = "";
+            if( assigned_to_id > 1) {
+                assignedId = "&assigned_to_id=" + assigned_to_id;
+            }
+
+            String statusId = "";
+            if ( status_id != "") {
+                statusId = "&status_id=" + status_id;
+
+                System.out.println("statusId" + statusId);
+            }
+
+            obj = webClient.get().uri("/issues.json?offset=" + offSet + "&limit=10" + assignedId + statusId)
                             .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey()) // 전체 목록 조회를 위해 Basci - Autho으로 조회
                             .retrieve()                 // client message 전송
                             .bodyToMono(JSONObject.class)  // body type
@@ -310,14 +322,11 @@ public class TestController {
 
         try{
 
+            IssueDto issueDto = IssueDto.builder().issue(param.get("issue")).build();
 
-            IssueDto test = IssueDto.builder().issue(param.get("issue")).build();
+            System.out.println("test=====> assigned_id "+issueDto.getIssue().get("assigned_to_id"));
 
-            System.out.println("test=====> assigned_id "+test.getIssue().get("assigned_to_id"));
-
-
-
-            int updatedIssueId = issueService.update(Integer.parseInt(id),test);
+            int updatedIssueId = issueService.update(Integer.parseInt(id),issueDto);
 
             if(updatedIssueId > 0 ){
 
@@ -362,9 +371,11 @@ public class TestController {
     @DeleteMapping("/deleteIssue/{id}")
     public String deleteIssue(@PathVariable int id){
 
-        int issueId = issueService.getIssueId(id);
+        int issueId = issueService.updateStatus(id);
 
-        if (issueId == id){
+        System.out.println("issueId =====> " + issueId);
+
+        if (issueId > 0){
             webClient.delete().uri("/issues/" + id + ".json")
                     .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
                     .retrieve()                 // client message 전송

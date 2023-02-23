@@ -2,6 +2,7 @@ package com.sekim.uriseoroapi.uriseoroapi.model;
 
 import com.sekim.uriseoroapi.uriseoroapi.dto.IssueDto;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 @Table(name="tb_issue")
 public class Issue {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
@@ -69,6 +70,9 @@ public class Issue {
     @CreatedDate
     private String closed_on; // 이슈 삭제 일자
 
+    @ColumnDefault("'N'")
+    private String delYN;
+
 
     /* 해당 엔티티를 저장하기 이전에 실행 */
     @PrePersist
@@ -86,20 +90,41 @@ public class Issue {
     // 일감 수정
     public int update(IssueDto issueDto){
 
-        this.project_id = (Integer) issueDto.getIssue().get("project_id");
-        this.tracker_id = (Integer) issueDto.getIssue().get("tracker_id");
-        this.status_id = (Integer) issueDto.getIssue().get("status_id");
-        this.priority_id = (Integer) issueDto.getIssue().get("priority_id");
-        this.subject = (String) issueDto.getIssue().get("subject");
+        if(issueDto.getIssue().get("project_id") != null){
+            this.project_id = (Integer) issueDto.getIssue().get("project_id");
+        }
+
+        if(issueDto.getIssue().get("tracker_id") != null){
+            this.tracker_id = (Integer) issueDto.getIssue().get("tracker_id");
+        }
+
+        if(issueDto.getIssue().get("status_id") != null){
+            this.status_id = (Integer) issueDto.getIssue().get("status_id");
+        }
+
+        if(issueDto.getIssue().get("priority_id")!= null){
+            this.priority_id = (Integer)issueDto.getIssue().get("priority_id");
+        }
+
+
+        if(issueDto.getIssue().get("subject")!= null){
+            this.subject = (String) issueDto.getIssue().get("subject");
+        }
+
         this.description = (String) issueDto.getIssue().get("description");
         this.due_date = (String) issueDto.getIssue().get("due_date");
 
 
         this.assigned_to_id = (String) issueDto.getIssue().get("assigned_to_id");
 
+        if(issueDto.getIssue().get("author_id")!= null){
+            this.author_id = (Integer)issueDto.getIssue().get("author_id");
+        }
 
-        this.author_id = (Integer) issueDto.getIssue().get("author_id");
-        this.done_ratio = (Integer) issueDto.getIssue().get("done_ratio");
+        if(issueDto.getIssue().get("done_ratio")!= null){
+            this.done_ratio = (Integer)issueDto.getIssue().get("done_ratio");
+        }
+
 //        this.is_private = (Integer) issueDto.getIssue().get("is_private");
         this.start_date = (String) issueDto.getIssue().get("start_date");
         this.updated_on = (String) issueDto.getIssue().get("updated_on");

@@ -11,5 +11,9 @@ import java.util.Optional;
 @Repository
 public interface IssueRepository extends JpaRepository<Issue,Integer> {
 
+    @Modifying
+    @Query("update Issue i set i.delYN = 'Y' where i.id = :id and i.delYN = 'N'")
+    int updateStatus(int id);
+
 
 }
