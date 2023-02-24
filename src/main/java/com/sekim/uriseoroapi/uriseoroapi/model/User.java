@@ -16,23 +16,35 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Table(name = "tb_user")
 public class User {
-    @Id @GeneratedValue
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userNo")
-    private long userNo;
+    private int userNo;
+
+    @Column(unique = true,nullable = false)
+    private String login;
+
     @Column(unique = true, nullable = false)
-    private String email;
-    @Column(columnDefinition = "VARCHAR(255)", nullable = false)
+    private String mail;
+
+    @Column(columnDefinition = "VARCHAR(40)", nullable = false)
     private String password;
 
+    @Column(columnDefinition = "VARCHAR(30)", nullable = false)
+    private String firstname;   
+
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)
-    private String username;
+    private String lastname;
 
     @ColumnDefault("'N'")
     private String delYN;
 
-    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'N'")
+    private String adminYN;
+
+//    @Enumerated(EnumType.STRING)
 //    @Column(nullable = false)
-    private Role role;
+//    private Role role;
 
     @Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private String createdDate;
