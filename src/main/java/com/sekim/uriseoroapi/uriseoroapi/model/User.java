@@ -1,5 +1,6 @@
 package com.sekim.uriseoroapi.uriseoroapi.model;
 
+import com.sekim.uriseoroapi.uriseoroapi.dto.UserDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -31,7 +32,7 @@ public class User {
     private String password;
 
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
-    private String firstname;   
+    private String firstname;
 
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)
     private String lastname;
@@ -68,5 +69,33 @@ public class User {
     public void onPreUpdate(){
         this.modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
     }
+
+
+    public int update(UserDto userDto){
+
+        if(userDto.getUser().get("id") != null){
+            this.userNo = (Integer) userDto.getUser().get("id");
+        }
+
+        if(userDto.getUser().get("login") != null){
+            this.login = (String) userDto.getUser().get("login");
+        }
+
+        if(userDto.getUser().get("firstname") != null){
+            this.firstname = (String) userDto.getUser().get("firstname");
+        }
+
+        if(userDto.getUser().get("lastname") != null){
+            this.lastname = (String) userDto.getUser().get("lastname");
+        }
+
+        if(userDto.getUser().get("mail") != null){
+            this.mail = (String) userDto.getUser().get("mail");
+        }
+
+
+        return this.userNo;
+    }
+
 
 }
