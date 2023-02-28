@@ -21,6 +21,22 @@ public class UserServiceImpl implements UserService{
     final UserRepository userRepository;
 
     @Override
+    public UserDto.Response login(UserDto dto) {
+        String login =  (String) dto.getUser().get("login");
+        String password =  (String) dto.getUser().get("password");
+
+        User user = userRepository.findByLoginAndPassword(login,password);
+
+        if(user == null){
+            throw new IllegalArgumentException("ID 또는 비밀번호를 확인해주세요");
+        }
+
+        return new UserDto.Response(user);
+    }
+
+
+    // 사용자 등록
+    @Override
     @Transactional
     public int registerUser(UserDto dto) {
 
@@ -48,6 +64,8 @@ public class UserServiceImpl implements UserService{
         return userRepository.findAll();
     }
 
+
+    // 사용자 상세 정보 조회
     @Override
     @Transactional
     public UserDto.Response getUserDetail(int userNo) {
@@ -57,15 +75,50 @@ public class UserServiceImpl implements UserService{
         return new UserDto.Response(user);
     }
 
+
+    // 사용자 정보 수정
     @Override
     @Transactional
     public int update(int id, UserDto dto) {
         
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException());
-        
-        int updatedUserId = user.update(dto);
+
+
+        // 변경하고자 하는 Login ID
+        String toChangeLogin = (String) dto.getUser().get("login") ;
+        // 기존 Login ID
+        String originLogin = user.getLogin();
+
+        // 변경하고자 하는 Mail
+        String toChangeMail = (String) dto.getUser().get("mail") ;
+        // 기존 Mail
+        String originMail = user.getMail();
+
+        int updatedUserId = 0;
+
+        // id만 변경 되었을 경우
+        if(!toChangeLogin.equals(originLogin)){
+            if(validateDuplicateLogin(toChangeLogin)){
+                updatedUserId = user.update(dto);
+            };
+        }else if(!toChangeMail.equals(originMail)) {
+            // 메일만 변경 되었을 경우
+            if(validateDuplicateMail(toChangeMail)){
+                updatedUserId = user.update(dto);
+            }
+        }else{
+            updatedUserId = user.update(dto);
+        }
 
         return updatedUserId;
+    }
+
+    @Override
+    public int updateStatus(int id) {
+
+        int result = userRepository.updateStatus(id);
+
+        return result;
     }
 
 
@@ -99,12 +152,12 @@ public class UserServiceImpl implements UserService{
     } */
 
 
-    // 중복회원 검증
-
+    // 중복회원 검증 - 사용자 생성 시
     private boolean validateDuplicateUser(String login, String mail){
         boolean answer = true;
 
         List user = userRepository.findByLoginAndMail(login, mail);
+
 
         if(!user.isEmpty()){
             answer = false;
@@ -112,9 +165,45 @@ public class UserServiceImpl implements UserService{
 
         // EXCEPTION 발생 시키기
         if(answer == false){
-            throw  new IllegalArgumentException("회원가입 실패");
+            throw  new IllegalArgumentException("[사용자 등록 실패] ID 또는 이메일을 확인해주세요.");
         }
 
+        return answer;
+    }
+
+    // 중복 ID 검증 - 사용자 정보 수정 시
+    private boolean validateDuplicateLogin(String login){
+        boolean answer = true;
+
+        List user = userRepository.findByLogin(login);
+
+        if(!user.isEmpty()){
+            answer = false;
+        }
+
+        // EXCEPTION 발생 시키기
+        if(answer == false){
+            throw  new IllegalArgumentException("[사용자 수정 실패] ID 또는 이메일을 확인해주세요.");
+        }
+
+        return answer;
+    }
+
+
+    // 중복 Email 검증 - 사용자 정보 수정 시
+    private boolean validateDuplicateMail(String mail){
+        boolean answer = true;
+
+        List user = userRepository.findByMail(mail);
+
+        if(!user.isEmpty()){
+            answer = false;
+        }
+
+        // EXCEPTION 발생 시키기
+        if(answer == false){
+            throw  new IllegalArgumentException("[사용자 수정 실패] ID 또는 이메일을 확인해주세요.");
+        }
 
         return answer;
     }

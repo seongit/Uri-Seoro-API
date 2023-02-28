@@ -5,6 +5,7 @@ import com.sekim.uriseoroapi.uriseoroapi.config.enums.BaseURLType;
 import com.sekim.uriseoroapi.uriseoroapi.dto.IssueDto;
 import com.sekim.uriseoroapi.uriseoroapi.dto.UserDto;
 import com.sekim.uriseoroapi.uriseoroapi.model.User;
+import com.sekim.uriseoroapi.uriseoroapi.repository.IssueRepository;
 import com.sekim.uriseoroapi.uriseoroapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -30,6 +31,8 @@ public class UserController {
             .build();
     @Autowired
     private final UserService userService;
+    @Autowired
+    private IssueRepository issueRepository;
 
 //
 //    /* 회원가입 */
@@ -39,11 +42,11 @@ public class UserController {
 //    }
 //
 //
-//    /* 로그인 */
-//    @PostMapping("/login")
-//    public User login(@RequestBody UserDto_BU.Request dto){
-//        return userService.login(dto);
-//    }
+    /* 로그인 */
+    @PostMapping("/login")
+    public UserDto.Response login(@RequestBody UserDto dto){
+        return userService.login(dto);
+    }
 
     /* 비밀번호 암호화 백업용 참고 코드
     @PostMapping("login")
@@ -90,7 +93,7 @@ public class UserController {
 
     // 사용자 전체 조회
     @GetMapping("/getUsers")
-    public JSONObject read(@RequestParam int page){
+    public JSONObject read(@RequestParam int page,@RequestParam String searchWord ){
 
         JSONObject obj = null;
 
@@ -101,7 +104,7 @@ public class UserController {
                 offSet = (page - 1) * 10;
             }
 
-            obj = webClient.get().uri("/users.json?sort=id&offset=" + offSet + "&limit=10")
+            obj = webClient.get().uri("/users.json?sort=id&offset=" + offSet + "&limit=10"+"&name="+searchWord)
                     .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey()) // 전체 목록 조회를 위해 Basci - Autho으로 조회
                     .retrieve()                 // client message 전송
                     .bodyToMono(JSONObject.class)  // body type
@@ -192,6 +195,27 @@ public class UserController {
 
     }
 
+    // 사용자 삭제
+    @DeleteMapping("/deleteUser/{id}")
+    public String deleteUser(@PathVariable int id){
+
+        int userId = userService.updateStatus(id);
+
+        if(userId > 0){
+            webClient.delete().uri("/users/" + id + ".json")
+                    .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
+                    .retrieve()                 // client message 전송
+                    .bodyToMono(Map.class)  // body type
+                    .block();
+
+            return "200 OK";
+        }else{
+            System.out.println("ID가 다름" + "DB : " + userId + "레드마인 API : " + id);
+        }
+
+        return "";
+
+    }
 
 
 

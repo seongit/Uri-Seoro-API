@@ -12,7 +12,7 @@ public interface UserService {
 //
 //     //UserEntity login(UserVo user);
 //
-//     User login(UserDto_BU.Request dto);
+     UserDto.Response login(UserDto dto);
 //
 //
 //     UserDto_BU.Response findById(long userNo);
@@ -28,5 +28,9 @@ public interface UserService {
 
     // 사용자 정보 변경
     int update(int id, UserDto dto);
+
+    // 사용자 삭제
+    int updateStatus(int id);
+
 
 }
