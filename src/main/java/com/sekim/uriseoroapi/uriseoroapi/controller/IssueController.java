@@ -4,10 +4,8 @@ import com.sekim.uriseoroapi.uriseoroapi.config.enums.BaseURLType;
 import com.sekim.uriseoroapi.uriseoroapi.config.enums.FileUpload;
 import com.sekim.uriseoroapi.uriseoroapi.dto.*;
 import com.sekim.uriseoroapi.uriseoroapi.service.IssueService;
-import io.netty.handler.codec.http.HttpResponse;
 import lombok.RequiredArgsConstructor;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +22,7 @@ import java.util.*;
 @CrossOrigin("*")
 @RequiredArgsConstructor
 @RequestMapping("/issue")
-public class TestController {
+public class IssueController {
 
     @Autowired
     private final IssueService issueService;
@@ -65,7 +63,10 @@ public class TestController {
      */
     // 일감 전체 조회
     @GetMapping("/getIssues/test")
-    public JSONObject read(@RequestParam int page,@RequestParam int assigned_to_id, @RequestParam String status_id){
+    public JSONObject read(@RequestParam int page
+            ,@RequestParam (required = false) int assigned_to_id
+            ,@RequestParam (required = false) String status_id
+            ,@RequestParam (required = false) String project_id){
 
         JSONObject obj = null;
 
@@ -91,7 +92,14 @@ public class TestController {
                 System.out.println("statusId" + statusId);
             }
 
-            obj = webClient.get().uri("/issues.json?offset=" + offSet + "&limit=10" + assignedId + statusId)
+            String projectId = "";
+            if (project_id != ""){
+                projectId = "&project_id=" + project_id;
+                System.out.println("statusId" + projectId);
+            }
+
+
+            obj = webClient.get().uri("/issues.json?offset=" + offSet + "&limit=10" + assignedId + statusId + projectId)
                             .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey()) // 전체 목록 조회를 위해 Basci - Autho으로 조회
                             .retrieve()                 // client message 전송
                             .bodyToMono(JSONObject.class)  // body type
@@ -314,19 +322,19 @@ public class TestController {
 
     // 일감 수정
     @PutMapping("/{id}")
-    public String editIssue(@PathVariable String id, @RequestBody Map<String,Map<String,Object>> param){
+    public String editIssue(@PathVariable int id, @RequestBody Map<String,Map<String,Object>> param){
 
         String resResponseData = "";
 
         // api 서버에도 전달 받은 데이터 업데이트
 
-        try{
+//        try{
 
             IssueDto issueDto = IssueDto.builder().issue(param.get("issue")).build();
 
             System.out.println("test=====> assigned_id "+issueDto.getIssue().get("assigned_to_id"));
 
-            int updatedIssueId = issueService.update(Integer.parseInt(id),issueDto);
+            int updatedIssueId = issueService.update(id,issueDto);
 
             if(updatedIssueId > 0 ){
 
@@ -342,11 +350,12 @@ public class TestController {
                 resResponseData = "api DB 적재 실패";
             }
 
-
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            resResponseData = e.getMessage();
-        }
+//
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//            resResponseData = e.getMessage();
+//            System.out.println(e);
+//        }
 
 
         return  resResponseData;

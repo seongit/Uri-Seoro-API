@@ -31,17 +31,8 @@ public class UserController {
             .build();
     @Autowired
     private final UserService userService;
-    @Autowired
-    private IssueRepository issueRepository;
 
-//
-//    /* 회원가입 */
-//    @PostMapping("/signup")
-//    public User signUp(@RequestBody UserDto_BU.Request dto){
-//        return userService.signUp(dto);
-//    }
-//
-//
+
     /* 로그인 */
     @PostMapping("/login")
     public UserDto.Response login(@RequestBody UserDto dto){

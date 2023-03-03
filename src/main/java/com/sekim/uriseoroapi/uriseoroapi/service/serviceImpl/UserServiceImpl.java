@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService{
         return updatedUserId;
     }
 
+    // 사용자 삭제
     @Override
     public int updateStatus(int id) {
 

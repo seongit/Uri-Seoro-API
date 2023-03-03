@@ -91,7 +91,7 @@ public class IssueServiceImpl implements IssueService {
 
         System.out.println("result====>" + result);
 
-        return 1;
+        return result;
     }
 
 

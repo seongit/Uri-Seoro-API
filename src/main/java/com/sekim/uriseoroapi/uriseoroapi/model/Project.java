@@ -1,5 +1,6 @@
 package com.sekim.uriseoroapi.uriseoroapi.model;
 
+import com.sekim.uriseoroapi.uriseoroapi.dto.ProjectDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,6 +48,8 @@ public class Project {
     @Column(name = "modified_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private String modifiedDate;
 
+    @Column
+    private String identifier;
 
 
 
@@ -62,6 +65,32 @@ public class Project {
     @PreUpdate
     public void onPreUpdate(){
         this.modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
+    }
+
+
+    public int update(ProjectDto projectDto){
+
+        if(projectDto.getProject().get("id") != null){
+            this.projectId = (Integer)projectDto.getProject().get("id");
+        }
+
+        if(projectDto.getProject().get("name") != null){
+            this.name = (String) projectDto.getProject().get("name");
+        }
+
+        if(projectDto.getProject().get("description") != null){
+            this.description = (String) projectDto.getProject().get("description");
+        }
+
+        if(projectDto.getProject().get("is_public") != null){
+            if((boolean) projectDto.getProject().get("is_public") == true){
+                this.isPublic = 1;
+            }else {
+                this.isPublic = 0;
+            }
+        }
+
+        return this.projectId;
     }
 
 

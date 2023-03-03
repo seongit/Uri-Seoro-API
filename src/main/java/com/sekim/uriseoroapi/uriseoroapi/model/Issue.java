@@ -43,8 +43,8 @@ public class Issue {
     private String due_date;
 
     @Column
-    // private int assigned_to_id;
-    String assigned_to_id;
+     //private int assigned_to_id;
+    private String assigned_to_id;
 
     @Column(columnDefinition = "int(11)", nullable = false)
     private int author_id;
@@ -111,11 +111,18 @@ public class Issue {
             this.subject = (String) issueDto.getIssue().get("subject");
         }
 
-        this.description = (String) issueDto.getIssue().get("description");
-        this.due_date = (String) issueDto.getIssue().get("due_date");
+        if(issueDto.getIssue().get("description") != null){
+            this.description = (String) issueDto.getIssue().get("description");
+        }
+
+        if( issueDto.getIssue().get("due_date") != null){
+            this.due_date = (String) issueDto.getIssue().get("due_date");
+        }
 
 
-        this.assigned_to_id = (String) issueDto.getIssue().get("assigned_to_id");
+        if(issueDto.getIssue().get("assigned_to_id")!= null){
+            this.assigned_to_id =  issueDto.getIssue().get("assigned_to_id").toString();
+        }
 
         if(issueDto.getIssue().get("author_id")!= null){
             this.author_id = (Integer)issueDto.getIssue().get("author_id");
@@ -126,8 +133,15 @@ public class Issue {
         }
 
 //        this.is_private = (Integer) issueDto.getIssue().get("is_private");
-        this.start_date = (String) issueDto.getIssue().get("start_date");
-        this.updated_on = (String) issueDto.getIssue().get("updated_on");
+
+        if(issueDto.getIssue().get("start_date") != null){
+            this.start_date = (String) issueDto.getIssue().get("start_date");
+        }
+
+        if( issueDto.getIssue().get("updated_on") != null ){
+            this.updated_on = (String) issueDto.getIssue().get("updated_on");
+        }
+
 
         return this.id;
     }

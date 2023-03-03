@@ -1,66 +1,94 @@
 package com.sekim.uriseoroapi.uriseoroapi.dto;
-
-import com.sekim.uriseoroapi.uriseoroapi.model.Role;
+import com.sekim.uriseoroapi.uriseoroapi.model.Issue;
 import com.sekim.uriseoroapi.uriseoroapi.model.User;
 import lombok.*;
 
+import java.util.Map;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserDto {
 
-    /** 회원 Service 요청(Request) DTO 클래스 */
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class Request{
-        private long userNo;
-        private String email;
-        private String password;
-        private String username;
-        private String delYN;
-        private String createdDate, modifiedDate;
-        private Role role;
+    Map<String,Object> user;
 
-        /* DTO -> Entity */
-        public User toEntity() {
-            User user = User.builder()
-                    .userNo(userNo)
-                    .email(email)
-                    .username(username)
-                    .password(password)
-                    .username(username)
-                    .delYN("N")
-                    //.role(role.USER)
-                    .build();
-            return user;
+
+    /* Dto -> Entity */
+    public User toEntity(){
+
+        String login = "";
+
+        String mail = "";
+
+        String password = "";
+
+        String firstname = "";
+
+        String lastname = "";
+
+        String adminYN = "N";
+
+        String delYN = "N";
+
+        login = (String) user.get("login");
+        mail = (String) user.get("mail");
+        password = (String) user.get("password");
+        firstname = (String) user.get("firstname");
+        lastname = (String) user.get("lastname");
+
+        if(user.get("admin") != "false"){
+            adminYN = "Y";
         }
 
+        User res = User.builder()
+                .login(login)
+                .mail(mail)
+                .password(password)
+                .firstname(firstname)
+                .lastname(lastname)
+                .delYN(delYN)
+                .adminYN(adminYN)
+                .build();
+
+        return res;
     }
 
-    @Getter
-    public static class Response {
 
-        private final Long userNo;
-        private final String email;
+    @Getter
+    public static class Response{
+
+        private final int userNo;
+
+        private final String login;
+
+        private final String mail;
 
         private final String password;
-        private final String username;
+
+        private final String firstname;
+
+        private final String lastname;
 
         private final String delYN;
-        private final Role role;
-        private final String modifiedDate;
+
+        private final String adminYN;
+
 
         public Response(User user){
             this.userNo = user.getUserNo();
-            this.email = user.getEmail();
+            this.login = user.getLogin();
+            this.mail = user.getMail();
             this.password = user.getPassword();
-            this.username = user.getUsername();
-            this.role = user.getRole();
+            this.firstname = user.getFirstname();
+            this.lastname = user.getLastname();
             this.delYN = user.getDelYN();
-            this.modifiedDate = user.getModifiedDate();
+            this.adminYN = user.getAdminYN();
+
         }
     }
 
 
 
 }
-

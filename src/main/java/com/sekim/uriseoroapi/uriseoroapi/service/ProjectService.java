@@ -11,11 +11,13 @@ public interface ProjectService {
     List<Project> projecList();
 
     // 프로젝트 상세 조회
+    ProjectDto.Response getProjectDetail(int projectId);
 
     // 프로젝트 생성
     int createProject(ProjectDto dto);
 
     // 프로젝트 수정
+    int update(int id, ProjectDto dto);
 
     // 프로젝트 삭제
     int updateStatus(int id);

@@ -1,10 +1,7 @@
 package com.sekim.uriseoroapi.uriseoroapi.dto;
 
 import com.sekim.uriseoroapi.uriseoroapi.model.Project;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Map;
 
@@ -24,9 +21,11 @@ public class ProjectDto {
         int isPublic = 1;
         int status = 1;
         String delYN = "N";
+        String identifier = "";
 
         projectName = (String) project.get("name");
         description = (String) project.get("description");
+        identifier = (String) project.get("identifier");
 
         if((boolean) project.get("is_public") == false ){
             isPublic = 0;
@@ -40,9 +39,43 @@ public class ProjectDto {
                 .isPublic(isPublic)
                 .status(status)
                 .delYN(delYN)
+                .identifier(identifier)
                 .build();
 
         return res;
     }
+
+
+    @Getter
+    public static class Response{
+
+        private final int projectId;
+
+        private final String name;
+
+        private final String description;
+
+        private final int isPublic;
+
+        private final int status;
+
+        private final String delYN;
+
+
+        public Response(Project project){
+
+            this.projectId = project.getProjectId();
+            this.name = project.getName();
+            this.description = project.getDescription();
+            this.isPublic = project.getIsPublic();
+            this.status = project.getStatus();
+            this.delYN = project.getDelYN();
+
+        }
+
+
+    }
+
+
 
 }

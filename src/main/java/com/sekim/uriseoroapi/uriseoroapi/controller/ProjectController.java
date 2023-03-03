@@ -33,7 +33,6 @@ public class ProjectController {
     private final ProjectService projectService;
 
     // 프로젝트 전체 목록 조회
-
     @GetMapping("/getAllProjects")
     public JSONObject read(@RequestParam int page){
 
@@ -46,7 +45,7 @@ public class ProjectController {
                 offSet = (page - 1) * 10;
             }
 
-            obj = webClient.get().uri("/projects.json?offset=" + offSet + "&limit=10")
+            obj = webClient.get().uri("/projects.json?sort=id&offset=" + offSet + "&limit=10")
                     .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey()) // 전체 목록 조회를 위해 Basci - Autho으로 조회
                     .retrieve()                 // client message 전송
                     .bodyToMono(JSONObject.class)  // body type
@@ -84,6 +83,25 @@ public class ProjectController {
     }
 
     // 프로젝트 상세 조회
+    @GetMapping("/getProjectDetail/{id}")
+    public ProjectDto getProjectDetail(@PathVariable String id){
+
+        ProjectDto.Response responseProject = projectService.getProjectDetail(Integer.parseInt(id));
+
+        ProjectDto projectDto = null;
+
+        projectDto = webClient.get().uri("/projects/" + id + ".json?")
+                .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
+                .retrieve()                 // client message 전송
+                .bodyToMono(ProjectDto.class)  // body type
+                .block();                   // await
+
+        if(responseProject.getProjectId() == (int) projectDto.getProject().get("id")) {
+            return projectDto;
+        }else
+            return null;
+
+    }
 
     // 프로젝트 생성
     @PostMapping("/createProject")
@@ -115,19 +133,50 @@ public class ProjectController {
 
     // 프로젝트 수정
 
+    @PutMapping("/editProject/{id}")
+    public String editProject(@PathVariable String id,@RequestBody Map<String,Map<String,Object>> param){
+
+        String resResponseData = "";
+
+        ProjectDto projectDto = ProjectDto.builder().project(param.get("project")).build();
+
+        int updatedProject = projectService.update(Integer.parseInt(id),projectDto);
+
+        if(updatedProject > 0){
+
+            webClient.put().uri("/projects/" + id + ".json")
+                    .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
+                    .bodyValue(param)
+                    .retrieve()                 // client message 전송
+                    .bodyToMono(Map.class)  // body type
+                    .block();
+            resResponseData = "201 OK";
+        }else{
+            resResponseData = "api DB 적재 실패";
+        }
+
+        return resResponseData;
+    }
+
     // 프로젝트 삭제
-    @DeleteMapping("/deleteProject")
+    @DeleteMapping("/deleteProject/{id}")
     public String deleteProject(@PathVariable int id){
 
-        projectService.updateStatus(id);
+        int projectID = projectService.updateStatus(id);
 
-        webClient.delete().uri("/projects/" + id + ".json")
-                .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
-                .retrieve()                 // client message 전송
-                .bodyToMono(Map.class)  // body type
-                .block();
+        if(projectID > 0){
+            webClient.delete().uri("/projects/" + id + ".json")
+                    .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
+                    .retrieve()                 // client message 전송
+                    .bodyToMono(Map.class)  // body type
+                    .block();
+            return "200 OK";
+        }else {
+            System.out.println("ID가 다름" + "DB : " + projectID + "레드마인 API : " + id);
+        }
 
-        return "";
+
+        return  "";
     }
 
 }
