@@ -3,7 +3,6 @@ package com.sekim.uriseoroapi.uriseoroapi.service.serviceImpl;
 import com.sekim.uriseoroapi.uriseoroapi.dto.ProjectDto;
 import com.sekim.uriseoroapi.uriseoroapi.model.Project;
 import com.sekim.uriseoroapi.uriseoroapi.repository.ProjectRepository;
-import com.sekim.uriseoroapi.uriseoroapi.repository.UserRepository;
 import com.sekim.uriseoroapi.uriseoroapi.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

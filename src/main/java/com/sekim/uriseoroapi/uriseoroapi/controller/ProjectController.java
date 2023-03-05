@@ -165,7 +165,7 @@ public class ProjectController {
         int projectID = projectService.updateStatus(id);
 
         if(projectID > 0){
-            webClient.delete().uri("/projects/" + id + ".json")
+           webClient.delete().uri("/projects/" + id + ".json")
                     .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
                     .retrieve()                 // client message 전송
                     .bodyToMono(Map.class)  // body type

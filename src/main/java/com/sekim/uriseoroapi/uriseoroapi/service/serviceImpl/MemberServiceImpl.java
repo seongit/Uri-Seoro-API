@@ -4,6 +4,7 @@ import com.sekim.uriseoroapi.uriseoroapi.dto.MemberDto;
 import com.sekim.uriseoroapi.uriseoroapi.model.Member;
 import com.sekim.uriseoroapi.uriseoroapi.repository.MemberRepository;
 import com.sekim.uriseoroapi.uriseoroapi.repository.ProjectRepository;
+import com.sekim.uriseoroapi.uriseoroapi.repository.UserRepository;
 import com.sekim.uriseoroapi.uriseoroapi.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class MemberServiceImpl implements MemberService {
 
     final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
 
     // 구성원 전체 목록 조회
@@ -59,7 +61,10 @@ public class MemberServiceImpl implements MemberService {
     // 구성원 삭제
     @Override
     public int updateStatus(int id) {
-        return 0;
+
+        int memberId = memberRepository.updateStatus(id);
+
+        return memberId;
     }
 
 

@@ -93,5 +93,22 @@ public class MemberController {
     // 구성원 수정
 
     // 구성원 삭제
+    @DeleteMapping("/deleteMember/{id}")
+    public String deleteMember(@PathVariable int id){
+
+        int memberId = memberService.updateStatus(id);
+
+        if(memberId > 0){
+            webClient.delete().uri("/memberships/" + id + ".json")
+                    .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
+                    .retrieve()                 // client message 전송
+                    .bodyToMono(Map.class)  // body type
+                    .block();
+            return "200 OK";
+        }
+
+
+        return  "";
+    }
 
 }
