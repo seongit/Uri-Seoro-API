@@ -94,6 +94,17 @@ public class User {
         }
 
 
+        if(userDto.getUser().get("admin") != null){
+
+            if((boolean) userDto.getUser().get("admin")){
+                this.adminYN = "Y";
+            }else{
+                this.adminYN = "N";
+            }
+
+        }
+
+
         return this.userNo;
     }
 

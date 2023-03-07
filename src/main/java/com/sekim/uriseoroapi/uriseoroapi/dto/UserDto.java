@@ -38,7 +38,7 @@ public class UserDto {
         firstname = (String) user.get("firstname");
         lastname = (String) user.get("lastname");
 
-        if(user.get("admin") != "false"){
+        if((boolean) user.get("admin") != false){
             adminYN = "Y";
         }
 

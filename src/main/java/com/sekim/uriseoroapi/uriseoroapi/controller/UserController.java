@@ -82,9 +82,10 @@ public class UserController {
 
     }
 
-    // 사용자 전체 조회
+
+    // 사용자 전체 조회 - 페이징 처리
     @GetMapping("/getUsers")
-    public JSONObject read(@RequestParam int page,@RequestParam String searchWord ){
+    public JSONObject read(@RequestParam (required = false, defaultValue = "0") int page, @RequestParam (required = false) String searchWord ){
 
         JSONObject obj = null;
 
@@ -142,7 +143,7 @@ public class UserController {
 
         UserDto userDto = null;
 
-        userDto = webClient.get().uri("/users/" + id + ".json?")
+        userDto = webClient.get().uri("/users/" + id + ".json?include=memberships")
                 .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey())
                 .retrieve()                 // client message 전송
                 .bodyToMono(UserDto.class)  // body type
