@@ -33,9 +33,6 @@ public class IssueDto {
            String dueDate = "";
 
 
-           //
-         //
-           //
          /**
           * 23.02
           * 담당자 변경을 위해 string으로 선언 / redmine api 상에서 담당자 초기화를 위해서는 ""값으로 선언되어야 함
@@ -63,7 +60,9 @@ public class IssueDto {
           startDate = (String) issue.get("start_date");
           dueDate = (String)issue.get("due_date");
 
-          assignedId = issue.get("assigned_to_id").toString();
+          if(issue.get("assigned_to_id") != null){
+              assignedId = issue.get("assigned_to_id").toString();
+          }
 
          /**
           *  NullPointerException 방지를 위해 다음과 같이 처리

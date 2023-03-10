@@ -121,6 +121,8 @@ public class Issue {
 
 
         if(issueDto.getIssue().get("assigned_to_id")!= null){
+
+            System.out.println("ssueDto.getIssue().get(\"assigned_to_id\")====>"+ issueDto.getIssue().get("assigned_to_id"));
             this.assigned_to_id =  issueDto.getIssue().get("assigned_to_id").toString();
         }
 

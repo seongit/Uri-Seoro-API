@@ -34,7 +34,7 @@ public class ProjectController {
 
     // 프로젝트 전체 목록 조회
     @GetMapping("/getAllProjects")
-    public JSONObject read(@RequestParam (required = false, defaultValue = "0") int page, @RequestParam (required = false, defaultValue = "false") String isPublic){
+    public JSONObject read(@RequestParam (required = false, defaultValue = "0") int page, @RequestParam (required = false, defaultValue = "false") String isPublic, @RequestParam (required = false) String searchWord){
 
         JSONObject obj = null;
 
@@ -51,8 +51,12 @@ public class ProjectController {
                 isPublic = "";
             }
 
+            if(searchWord != ""){
+                searchWord = "&name="+searchWord;
+            }
 
-            obj = webClient.get().uri("/projects.json?sort=id&offset=" + offSet + "&limit=10"+isPublic)
+
+            obj = webClient.get().uri("/projects.json?sort=id&offset=" + offSet + "&limit=10"+isPublic + searchWord )
                     .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey()) // 전체 목록 조회를 위해 Basci - Autho으로 조회
                     .retrieve()                 // client message 전송
                     .bodyToMono(JSONObject.class)  // body type

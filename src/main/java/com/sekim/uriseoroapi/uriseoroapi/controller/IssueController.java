@@ -330,6 +330,8 @@ public class IssueController {
 
 //        try{
 
+        System.out.println("param====>"+param);
+
             IssueDto issueDto = IssueDto.builder().issue(param.get("issue")).build();
 
             System.out.println("test=====> assigned_id "+issueDto.getIssue().get("assigned_to_id"));

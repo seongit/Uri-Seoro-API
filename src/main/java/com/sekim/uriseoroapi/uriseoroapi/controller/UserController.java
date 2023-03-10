@@ -134,6 +134,32 @@ public class UserController {
     }
 
 
+    // 사용자 전체 목록 조회 - 페이징 X
+    @GetMapping("/getAllUsers")
+    public JSONObject readAll( @RequestParam (required = false, defaultValue = "") String searchWord ){
+
+        JSONObject obj = null;
+        if(userService.userList().size() > 0 ){
+
+            obj = webClient.get().uri("/users.json?sort=id"+"&name="+searchWord)
+                    .header(HttpHeaders.AUTHORIZATION, AdminAuth.BASIC_BASE_64.getKey()) // 전체 목록 조회를 위해 Basci - Autho으로 조회
+                    .retrieve()                 // client message 전송
+                    .bodyToMono(JSONObject.class)  // body type
+                    .block();                   // await
+
+            List<Map<String,Object>> obj_users = (List<Map<String, Object>>) obj.get("users");
+
+        }else{
+            return (JSONObject) userService.userList();
+        }
+
+        return obj;
+    }
+
+
+
+
+
     // 사용자 상세 조회
     @GetMapping("/getDetailUser/{id}")
     public UserDto getUserDetail(@PathVariable String id){
