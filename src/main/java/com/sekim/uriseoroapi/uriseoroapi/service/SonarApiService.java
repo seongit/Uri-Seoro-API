@@ -5,4 +5,6 @@ import org.json.simple.JSONObject;
 public interface SonarApiService {
     JSONObject getAllRules(String page);
 
+    JSONObject getAllSonarLanguagesList();
+
 }
