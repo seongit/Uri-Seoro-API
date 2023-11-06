@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -72,5 +74,29 @@ public class SonarApiServiceImpl implements SonarApiService {
         return obj;
     }
 
+
+    /**
+     * 룰셋 정보 상세 조회 (기록용)
+     */
+
+    public String selectRuleSetDtail(){
+
+        // 룰 점검우선순위별로 그룹핑
+        Map<String,List<Object>> resultList = list.stream()
+                .collect(Collectors.groupingBy(CustomVO::getSeverity));
+
+        // 점검우선순위별로 정렬
+        List<String> severityList = Arrays.asList("BLOCKER","CRITICAL","MAJOR","MINOR");
+
+        Map<String,List<Object>> soredList = new LinkedHashMap<>();
+
+        for(String severity : severityList){
+            if(resultList.containsKey(severity)){
+                soredList.put(severity,resultList.get(severity));
+            }
+        }
+
+        return "";
+    }
 
 }
