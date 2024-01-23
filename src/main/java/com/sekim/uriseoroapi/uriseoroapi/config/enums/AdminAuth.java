@@ -13,4 +13,7 @@ public enum AdminAuth {
         this.key = key;
     }
 
+    public String getKey() {
+        return key;
+    }
 }

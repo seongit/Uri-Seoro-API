@@ -15,4 +15,8 @@ public enum BaseURLType {
      BaseURLType(String url) {
         this.url = url;
     }
+
+    public String getUrl() {
+         return url;
+    }
 }

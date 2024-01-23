@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class SonarController {
 
     @Autowired
-    private final SonarApiService sonarApiService;
+    private SonarApiService sonarApiService;
 
     /**
      * Rules List 전체 목록 조회 (페이징 처리 완료)

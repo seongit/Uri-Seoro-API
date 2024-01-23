@@ -7,8 +7,8 @@ import com.sekim.uriseoroapi.uriseoroapi.service.SonarApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SonarApiServiceImpl implements SonarApiService {
 
+    @Autowired
+    RestTemplate restTemplate;
+
     //DataBufferLimitException 방지를 위해 buffer 크기 변경
     ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
@@ -36,6 +39,27 @@ public class SonarApiServiceImpl implements SonarApiService {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
+
+
+    /**
+     * 소나큐브 서버 헬스체크
+     * @return
+     */
+    public boolean isUpSonar(){
+        boolean isServerUp = false;
+        ResponseEntity<Map> responseEntity = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(sonarId, sonarPw);
+        responseEntity = restTemplate.exchange(baseUrl, HttpMethod.GET, new HttpEntity<>(headers), Map.class);
+        if(responseEntity.getStatusCode().is2xxSuccessful()){
+            String status = (String) responseEntity.getBody().get("status");
+            if(status.equalsIgnoreCase("UP")){
+                isServerUp = true;
+            }
+        }
+        return isServerUp;
+    }
 
     public JSONObject getAllRules(String page) {
 
@@ -79,7 +103,6 @@ public class SonarApiServiceImpl implements SonarApiService {
     /**
      * 룰셋 정보 상세 조회 (기록용)
      */
-
     public String selectRuleSetDtail(){
 
         RestTemplate restTemplate = new RestTemplate();
@@ -105,5 +128,4 @@ public class SonarApiServiceImpl implements SonarApiService {
         }
         return "soredList 반환";
     }
-
 }
