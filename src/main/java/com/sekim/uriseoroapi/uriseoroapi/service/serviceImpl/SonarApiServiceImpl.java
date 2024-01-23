@@ -1,5 +1,6 @@
 package com.sekim.uriseoroapi.uriseoroapi.service.serviceImpl;
 
+import com.sekim.uriseoroapi.uriseoroapi.config.enums.APIConstants;
 import com.sekim.uriseoroapi.uriseoroapi.config.enums.AdminAuth;
 import com.sekim.uriseoroapi.uriseoroapi.config.enums.BaseURLType;
 import com.sekim.uriseoroapi.uriseoroapi.service.SonarApiService;
@@ -8,15 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,22 +82,28 @@ public class SonarApiServiceImpl implements SonarApiService {
 
     public String selectRuleSetDtail(){
 
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(sonarId, sonarPw));
+
+        List<RuleSetDtailInfoOut> list = new ArrayList<>();
+
         // 룰 점검우선순위별로 그룹핑
-        Map<String,List<Object>> resultList = list.stream()
-                .collect(Collectors.groupingBy(CustomVO::getSeverity));
+        Map<String, List<RuleSetDtailInfoOut>> resultList = list.stream()
+                .collect(Collectors.groupingBy(RuleSetDtailInfoOut::getSeverity));
 
         // 점검우선순위별로 정렬
-        List<String> severityList = Arrays.asList("BLOCKER","CRITICAL","MAJOR","MINOR");
+        List<APIConstants.SEVERITY> severityList = Arrays.asList(APIConstants.SEVERITY.values());
+        //List<String> severityList = Arrays.asList("BLOCKER","CRITICAL","MAJOR","MINOR");
 
-        Map<String,List<Object>> soredList = new LinkedHashMap<>();
+        Map<String,List<RuleSetDtailInfoOut>> soredList = new LinkedHashMap<>();
 
-        for(String severity : severityList){
-            if(resultList.containsKey(severity)){
-                soredList.put(severity,resultList.get(severity));
+        for(APIConstants.SEVERITY severity : severityList){
+            String severityString = severity.name();
+            if(resultList.containsKey(severityString)){
+                soredList.put(severityString,resultList.get(severityString));
             }
         }
-
-        return "";
+        return "soredList 반환";
     }
 
 }
