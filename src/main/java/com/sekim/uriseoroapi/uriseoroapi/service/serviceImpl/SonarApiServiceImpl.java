@@ -103,29 +103,29 @@ public class SonarApiServiceImpl implements SonarApiService {
     /**
      * 룰셋 정보 상세 조회 (기록용)
      */
-    public String selectRuleSetDtail(){
-
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(sonarId, sonarPw));
-
-        List<RuleSetDtailInfoOut> list = new ArrayList<>();
-
-        // 룰 점검우선순위별로 그룹핑
-        Map<String, List<RuleSetDtailInfoOut>> resultList = list.stream()
-                .collect(Collectors.groupingBy(RuleSetDtailInfoOut::getSeverity));
-
-        // 점검우선순위별로 정렬
-        List<APIConstants.SEVERITY> severityList = Arrays.asList(APIConstants.SEVERITY.values());
-        //List<String> severityList = Arrays.asList("BLOCKER","CRITICAL","MAJOR","MINOR");
-
-        Map<String,List<RuleSetDtailInfoOut>> soredList = new LinkedHashMap<>();
-
-        for(APIConstants.SEVERITY severity : severityList){
-            String severityString = severity.name();
-            if(resultList.containsKey(severityString)){
-                soredList.put(severityString,resultList.get(severityString));
-            }
-        }
-        return "soredList 반환";
-    }
+//    public String selectRuleSetDtail(){
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(sonarId, sonarPw));
+//
+//        List<RuleSetDtailInfoOut> list = new ArrayList<>();
+//
+//        // 룰 점검우선순위별로 그룹핑
+//        Map<String, List<RuleSetDtailInfoOut>> resultList = list.stream()
+//                .collect(Collectors.groupingBy(RuleSetDtailInfoOut::getSeverity));
+//
+//        // 점검우선순위별로 정렬
+//        List<APIConstants.SEVERITY> severityList = Arrays.asList(APIConstants.SEVERITY.values());
+//        //List<String> severityList = Arrays.asList("BLOCKER","CRITICAL","MAJOR","MINOR");
+//
+//        Map<String,List<RuleSetDtailInfoOut>> soredList = new LinkedHashMap<>();
+//
+//        for(APIConstants.SEVERITY severity : severityList){
+//            String severityString = severity.name();
+//            if(resultList.containsKey(severityString)){
+//                soredList.put(severityString,resultList.get(severityString));
+//            }
+//        }
+//        return "soredList 반환";
+//    }
 }
